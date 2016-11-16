@@ -64,3 +64,14 @@ nav a {
 footer {
   text-align:right;
 }
+
+.adopt-carousel {
+  width:420px; /* hard-coded to fit the images */
+  margin-bottom: 2em;
+}
+
+.activeLink {
+  background-color:#eee;
+  padding: .25em 1em;
+  border: 1px solid #ddd;
+}
