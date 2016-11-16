@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import { Link, hashHistory } from 'react-router';
 import SAMPLE_DOGS from './dog-data'; //load the dog data to use
 
 class PetApp extends React.Component {
@@ -28,7 +29,7 @@ class PetApp extends React.Component {
               <GeneralLinks />
             </div>
             <div className="col-xs-9">
-              <DogList />
+              {this.props.children}
             </div>
           </div>
         </main>
@@ -46,9 +47,9 @@ class GeneralLinks extends React.Component {
       <nav>
         <h2>Navigation</h2>
         <ul className="list-unstyled">
-          <li><a>Adopt a Pet</a></li>
-          <li><a>About Us</a></li>
-          <li><a>Resources</a></li>
+          <li><Link to="/list" activeClassName="activeLink">Adopt a Pet</Link></li>
+          <li><Link to="/about" activeClassName="activeLink">About Us</Link></li>
+          <li><Link to="/resources" activeClassName="activeLink">Resources</Link></li>
         </ul>
       </nav>      
     );
@@ -59,7 +60,7 @@ class BreedLinks extends React.Component {
   render() {
     
     var links = this.props.breeds.map(function(breed){
-      return <li key={breed}><a>{breed}</a></li>;
+      return <li key={breed}><Link to={'/list/'+breed} activeClassName="activeLink">{breed}</Link></li>;
     })
 
     return (
@@ -67,6 +68,7 @@ class BreedLinks extends React.Component {
         <h2>Breeds</h2>
         <ul className="list-unstyled">
           {links}
+          <li><Link to="list" activeClassName="activeLink" onlyActiveOnIndex={true}>All Breeds</Link></li>
         </ul>
       </nav>
     );
@@ -80,7 +82,14 @@ class DogList extends React.Component {
   }
 
   render() {
-    var dogCards = this.state.dogs.map((dog) => { //arrow function!
+
+    var dogList = this.state.dogs;
+    if(this.props.params.breed){ //if have a param
+      //filter the list based on that!
+      dogList = dogList.filter(dog => dog.breed === this.props.params.breed);
+    }
+
+    var dogCards = dogList.map((dog) => { //arrow function!
       return <DogCard mutt={dog} key={dog.name} />;
     })
 
@@ -99,20 +108,27 @@ class DogCard extends React.Component {
 
   handleClick(){
     console.log("You clicked on", this.props.mutt.name);
+    hashHistory.push('/adopt/'+this.props.mutt.name);
   }
 
   render() {
     var mutt = this.props.mutt; //shortcut
     return (
-      <div className="card" onClick={(e) => this.handleClick(e)}>
+      <div className="card">
         <div className="content">
           <img src={mutt.images[0]} alt={mutt.name} />
-          <h3>{mutt.name} {mutt.adopted ? '(Adopted)' : ''}</h3>
+          <h3>{mutt.name} {mutt.adopted ? '(Adopted)' : ''}           
+            <button className="btn btn-default btn-small pull-right" onClick={(e) => this.handleClick(e)}>
+              Adopt me!
+            </button>
+          </h3>
           <p>{mutt.sex} {mutt.breed}</p>
         </div>
       </div>
     );
   }
 }
+
+export {DogList, PetApp}; //export both components
 
 export default PetApp;

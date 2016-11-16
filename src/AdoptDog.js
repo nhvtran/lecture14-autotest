@@ -5,7 +5,7 @@ import DOG_DATA from './dog-data'; //load the dog data to use
 
 class AdoptPage extends React.Component {
   render() {
-    var dogName = undefined;
+    var dogName = this.props.params.dogName;
     console.log("DEBUG: must define `dogName`");
 
     var dogObj =  _.find(DOG_DATA, {name: dogName}); //find dog in data (hack)
