@@ -1,3 +1,3 @@
-# React Misc
+# React Routing
 
-Repo for demonstrating React components, function binding, and form validation.
+Repo for demonstrating React routing.
