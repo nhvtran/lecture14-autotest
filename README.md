@@ -1,3 +1,3 @@
-# React Routing
+# Automated Testing
 
-Repo for demonstrating React routing.
+Repo for demonstrating automated testing for React
