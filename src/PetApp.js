@@ -81,21 +81,36 @@ class DogList extends React.Component {
     this.state = {dogs:SAMPLE_DOGS}; //in state as if coming from Controller
   }
 
+  searchDogs(searchTerm){
+    var searchedList = SAMPLE_DOGS.filter((dog) => {
+      return _.includes(dog.breed, searchTerm) || dog.sex === searchTerm || _.includes(dog.name, searchTerm);
+    });
+    this.setState({dogs:searchedList});
+  }
+
+  selectDogCard(selectedDog){
+    hashHistory.push('/adopt/'+selectedDog.name);
+  }
+
   render() {
 
     var dogList = this.state.dogs;
-    if(this.props.params.breed){ //if have a param
+    if(this.props.params && this.props.params.breed){ //if have a param
       //filter the list based on that!
       dogList = dogList.filter(dog => dog.breed === this.props.params.breed);
     }
 
     var dogCards = dogList.map((dog) => { //arrow function!
-      return <DogCard mutt={dog} key={dog.name} />;
+      return <DogCard mutt={dog} key={dog.name} selectCallback={this.selectDogCard} />;
     })
 
     return (
       <div>
         <h2>Dogs for Adoption</h2>
+        <div className="input-group">
+          <label htmlFor="searchTerm" className="input-group-addon"><i className="glyphicon glyphicon-search" aria-label="Search"></i></label>
+          <input type="text" id="searchTerm" className="form-control" placeholder="Search for breed, sex, or name" onChange={(e) => this.searchDogs(e.target.value)}/>
+        </div>
         <div className="cards-container">
           {dogCards}
         </div>
@@ -108,7 +123,7 @@ class DogCard extends React.Component {
 
   handleClick(){
     console.log("You clicked on", this.props.mutt.name);
-    hashHistory.push('/adopt/'+this.props.mutt.name);
+    this.props.selectCallback(this.props.mutt);
   }
 
   render() {
@@ -129,6 +144,6 @@ class DogCard extends React.Component {
   }
 }
 
-export {DogList, PetApp}; //export both components
+export {DogList, PetApp, DogCard}; //export both components
 
 export default PetApp;
